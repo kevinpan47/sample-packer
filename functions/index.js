@@ -1,5 +1,8 @@
 const functions = require("firebase-functions");
 const axios = require("axios");
+const archiver = require('archiver');
+const https = require('https');
+const fs = require('fs');
 require('dotenv').config();
 
 // // Create and Deploy Your First Cloud Functions
@@ -88,4 +91,40 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
   }
   
   response.send(soundInstances);
+});
+
+const archiveFiles = (response) => {
+  var archive = archiver('zip');
+
+  archive.on('error', function(err) {
+    response.status(500).send({error: err.message});
+  });
+
+  //on stream closed we can end the request
+  archive.on('end', function() {
+    console.log('Archive wrote %d bytes', archive.pointer());
+  });
+
+  //set the archive name
+  response.attachment('samples.zip');
+
+  //this is the streaming magic
+  archive.pipe(response);
+
+  archive.directory(__dirname + '/sounds', false);
+
+  archive.finalize();
+
+}
+
+exports.download = functions.https.onRequest(async (request, response) => {
+
+  const file = fs.createWriteStream("./sounds/file.mp3");
+  https.get("https://freesound.org/data/previews/215/215601_1979597-hq.mp3", function(res) {
+    var stream = res.pipe(file);
+    stream.on('finish', () => {
+      archiveFiles(response);
+    });
+  });
+
 });
