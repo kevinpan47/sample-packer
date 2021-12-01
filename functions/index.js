@@ -42,14 +42,17 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
 
   var count = request.query.count;
 
-  var soundInstances = [];
+  var soundInstances = {};
+  var sounds = [];
+  soundInstances.sounds = sounds;
+
   var randomIDs = [];
 
-  while (soundInstances.length < count) {
+  while (Object.keys(soundInstances.sounds).length < count) {
     var rand = Math.floor(Math.random() * (max - min + 1) + min)
 
     // Generate unique random number
-    if (soundInstances.length > 1 ) {
+    if (Object.keys(soundInstances.sounds).length > 1 ) {
       while (rand in randomIDs) {
         rand = Math.floor(Math.random() * (max - min + 1) + min)
       }
@@ -62,13 +65,16 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
         token: process.env.CLIENT_SECRET
       }
     }).then(res => {
-      soundInstances.push({
+      var id = res.data.id;
+
+      soundInstances.sounds.push({
         id: res.data.id,
         name: res.data.name,
         duration: res.data.duration,
         link: res.data.previews['preview-hq-mp3'],
         image: res.data.images['waveform_m'],
       });
+
       console.log("name:", res.data.name);
       console.log("id:", res.data.id);
       
@@ -82,5 +88,5 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
   console.log(soundInstances);
   
 
-  response.send(JSON.stringify(soundInstances));
+  response.send(soundInstances);
 });
