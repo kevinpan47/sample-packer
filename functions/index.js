@@ -22,25 +22,26 @@ exports.search = functions.https.onRequest(async (request, response) => {
       token: process.env.CLIENT_SECRET
     }
   }).then(res => {
-    // console.log(res.data)
     functions.logger.info("Returning search data for query ", request.query, {structuredData: true})
     return res.data;
   }).catch((err) => {
-    console.log(err);
-    functions.logger.error(err, {structuredData: true});
+    functions.logger.error(err.message);
   })
 
   console.log(request.query);
-  functions.logger.info("Hello logs!", {structuredData: true});
+  functions.logger.info("Hello logs!");
   
   response.send(searchResults);
 });
 
 exports.randomSoundPreviews = functions.https.onRequest(async (request, response) => {
+  functions.logger.info("Called /randomSoundPreviews");
+
   var min = 6;
   var max = 601000;
 
   var count = request.query.count;
+  functions.logger.info("Count:", count);
 
   var soundInstances = {};
   var sounds = [];
@@ -58,35 +59,33 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
       }
     }
 
-    const sound = await axios({
+    await axios({
       method: 'GET',
       url: `https://freesound.org/apiv2/sounds/${rand}/`,
       params: {
         token: process.env.CLIENT_SECRET
       }
     }).then(res => {
-      var id = res.data.id;
-
-      soundInstances.sounds.push({
+      var sound = {
         id: res.data.id,
         name: res.data.name,
         duration: res.data.duration,
         link: res.data.previews['preview-hq-mp3'],
         image: res.data.images['waveform_m'],
-      });
+      }
 
-      console.log("name:", res.data.name);
-      console.log("id:", res.data.id);
+      soundInstances.sounds.push(sound);
+
+      functions.logger.info("Retrieving sound:");
+      functions.logger.info(sound);
       
       randomIDs.push(res.data.id);
       return;
     }).catch(err => {
-      console.log(err.message)
+      functions.logger.error(err.message);
+      functions.logger.info("Retrying with different sound ID");
     })
   }
-
-  console.log(soundInstances);
   
-
   response.send(soundInstances);
 });
