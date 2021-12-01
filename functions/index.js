@@ -39,31 +39,48 @@ exports.search = functions.https.onRequest(async (request, response) => {
 exports.randomSoundPreviews = functions.https.onRequest(async (request, response) => {
   var min = 6;
   var max = 601000;
-  
-  var randomIDs = [];
 
   var count = request.query.count;
 
-  // Generate given number of unique random numbers
-  for (var i = 0; i < count; i++) {
+  var soundInstances = [];
+  var randomIDs = [];
+
+  while (soundInstances.length < count) {
     var rand = Math.floor(Math.random() * (max - min + 1) + min)
-    while (rand in randomIDs) {
-      rand = Math.floor(Math.random() * (max - min + 1) + min)
+
+    // Generate unique random number
+    if (soundInstances.length > 1 ) {
+      while (rand in randomIDs) {
+        rand = Math.floor(Math.random() * (max - min + 1) + min)
+      }
     }
-    randomIDs.push(rand);
+
+    const sound = await axios({
+      method: 'GET',
+      url: `https://freesound.org/apiv2/sounds/${rand}/`,
+      params: {
+        token: process.env.CLIENT_SECRET
+      }
+    }).then(res => {
+      soundInstances.push({
+        id: res.data.id,
+        name: res.data.name,
+        duration: res.data.duration,
+        link: res.data.previews['preview-hq-mp3'],
+        image: res.data.images['waveform_m'],
+      });
+      console.log("name:", res.data.name);
+      console.log("id:", res.data.id);
+      
+      randomIDs.push(res.data.id);
+      return;
+    }).catch(err => {
+      console.log(err.message)
+    })
   }
 
-  const soundInstance = axios({
-    method: 'GET',
-    url: `https://freesound.org/apiv2/sounds/${randomIDs[0]}/`,
-    params: {
-      token: process.env.CLIENT_SECRET
-    }
-  }).then(res => {
-    var name = res.data.name;
-    var link = res.data.previews['preview-hq-mp3'];
-    console.log(name, link)
-  })
+  console.log(soundInstances);
+  
 
-  response.send(randomIDs.toString());
+  response.send(JSON.stringify(soundInstances));
 });
