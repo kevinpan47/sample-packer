@@ -37,7 +37,7 @@ exports.search = functions.https.onRequest(async (request, response) => {
   response.send(searchResults);
 });
 
-exports.randomSoundPreviews = functions
+exports.randomSound = functions
   .runWith({
     timeoutSeconds: 300,
     memory: "1GB",
@@ -88,6 +88,8 @@ exports.randomSoundPreviews = functions
 
         functions.logger.info("Retrieving sound:");
         functions.logger.info(sound);
+
+        response.write(sound)
 
         var fileName = sound.name.replace('/', '_')
         if (sound.name.lastIndexOf('.') != -1) {

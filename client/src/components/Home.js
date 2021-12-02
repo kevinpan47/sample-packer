@@ -2,21 +2,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import fileSaver from "file-saver";
 
+import { Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const Home = () => {
   const [sounds, setSounds] = useState();
 
-  useEffect(() => {
-    console.log(process.env.ACCESS_TOKEN)
-  }, []);
-
   const fetchRandomSounds = () => {
     axios({
       method: 'GET',
-      url: `http://localhost:5001/sample-packer/us-central1/randomSoundPreviews`,
+      url: `https://us-central1-sample-packer.cloudfunctions.net/randomSound`,
       responseType: 'blob',
       params: {
-        count: 20
+        count: 10
       }
     }).then(res => {
       console.log(res.data);
@@ -28,11 +26,12 @@ const Home = () => {
   }
 
   return(
-    <>
-      <button onClick={fetchRandomSounds}>
-        Get Sounds!
-      </button>
-    </>
+    <div style={{textAlign: "center"}}>
+      <h1>Get Sounds!</h1>
+      <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large" onClick={fetchRandomSounds}>
+        Download
+      </Button>
+    </div>
   );
 }
 

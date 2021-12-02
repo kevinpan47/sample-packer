@@ -107,7 +107,7 @@ sample-packer-b3b1b11699e9.json
 /functions/sounds
 
 # production
-/build
+client/build
 
 # misc
 .DS_Store
