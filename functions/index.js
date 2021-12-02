@@ -89,42 +89,74 @@ exports.randomSound = functions
         functions.logger.info("Retrieving sound:");
         functions.logger.info(sound);
 
-        response.write(sound)
+        // response.write(JSON.stringify(sound))
 
         var fileName = sound.name.replace('/', '_')
         if (sound.name.lastIndexOf('.') != -1) {
           fileName = sound.name.substring(0, sound.name.lastIndexOf('.'));
         }
         fileName += '-' + sound.id + '.mp3'
-
-        await axios({
-          method: 'GET',
-          url: sound.link,
-          responseType: 'arraybuffer',
-        }).then(res => {
-          zip.addFile(fileName, Buffer.from(res.data));
-        }).then(() => {
-          soundInstances.sounds.push(sound);
-          randomIDs.push(sound.id);
-        }).catch(err => {
-          functions.logger.error(err.message);
-        });
         
+        soundInstances.sounds.push(sound);
+        randomIDs.push(sound.id);
+
       }).catch(err => {
         functions.logger.error(err.message);
         functions.logger.info("Retrying with different sound ID");
       })
     }
 
-    var zipFileContents = zip.toBuffer();
+    // var zipFileContents = zip.toBuffer();
 
-    const fileName = 'sounds.zip';
-    const fileType = 'application/zip';
+    // const fileName = 'sounds.zip';
+    // const fileType = 'application/zip';
 
-    response.writeHead(200, {
-        'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Type': fileType,
-    })
+    // response.writeHead(200, {
+    //     'Content-Disposition': `attachment; filename="${fileName}"`,
+    //     'Content-Type': fileType,
+    // })
 
-    response.end(zipFileContents);
+    // response.end(zipFileContents);
+
+    response.send(soundInstances);
+    // response.end()
+});
+
+exports.download = functions.https.onRequest(async (request, response) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+  // add error handling
+  if (request.query.sounds === undefined) {
+    response.error("No sound objects")
+  }
+
+  const zip = new AdmZip();
+  const data = JSON.parse(request.query.sounds);
+
+  for (var index in data.sounds) {
+    sound = data.sounds[index];
+
+    await axios({
+      method: 'GET',
+      url: sound.link,
+      responseType: 'arraybuffer',
+    }).then(res => {
+      zip.addFile(sound.name, Buffer.from(res.data));
+    }).catch(err => {
+      functions.logger.error(err.message);
+    });
+  }
+  
+  var zipFileContents = zip.toBuffer();
+
+  const fileName = 'sounds.zip';
+  const fileType = 'application/zip';
+
+  response.writeHead(200, {
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Content-Type': fileType,
+  })
+
+  response.end(zipFileContents);
 });
