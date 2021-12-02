@@ -3,6 +3,8 @@ const axios = require("axios");
 const archiver = require('archiver');
 const https = require('https');
 const fs = require('fs');
+const fsExtra = require('fs-extra');
+const AdmZip = require('adm-zip');
 require('dotenv').config();
 
 // // Create and Deploy Your First Cloud Functions
@@ -16,7 +18,9 @@ require('dotenv').config();
 // query the sound instances endpoint until we get enough data
 
 exports.search = functions.https.onRequest(async (request, response) => {
-  
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
   const searchResults = await axios({
     method: 'GET',
     url: `https://freesound.org/apiv2/search/text/`,
@@ -38,6 +42,9 @@ exports.search = functions.https.onRequest(async (request, response) => {
 });
 
 exports.randomSoundPreviews = functions.https.onRequest(async (request, response) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "X-Requested-With");
+  
   functions.logger.info("Called /randomSoundPreviews");
 
   var min = 6;
@@ -68,7 +75,7 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
       params: {
         token: process.env.CLIENT_SECRET
       }
-    }).then(res => {
+    }).then(async res => {
       var sound = {
         id: res.data.id,
         name: res.data.name,
@@ -81,6 +88,13 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
 
       functions.logger.info("Retrieving sound:");
       functions.logger.info(sound);
+
+      var fileName = sound.name.replace('/', '_')
+      if (sound.name.lastIndexOf('.') != -1) {
+        fileName = sound.name.substring(0, sound.name.lastIndexOf('.'));
+      }
+
+      await downloadFile(sound.link, `./sounds/${fileName}-${sound.id}.mp3`)
       
       randomIDs.push(res.data.id);
       return;
@@ -89,42 +103,69 @@ exports.randomSoundPreviews = functions.https.onRequest(async (request, response
       functions.logger.info("Retrying with different sound ID");
     })
   }
-  
+
   response.send(soundInstances);
 });
 
-const archiveFiles = (response) => {
+const archiveFiles = async (zipName) => {
+  const output = fs.createWriteStream(`${__dirname}/zip/${zipName}.zip`);
   var archive = archiver('zip');
-
   archive.on('error', function(err) {
-    response.status(500).send({error: err.message});
+    console.log("Archiver error:", err.message);
   });
-
-  //on stream closed we can end the request
   archive.on('end', function() {
     console.log('Archive wrote %d bytes', archive.pointer());
+    fsExtra.emptyDirSync(`${__dirname}/sounds`);
   });
-
-  //set the archive name
-  response.attachment('samples.zip');
-
-  //this is the streaming magic
-  archive.pipe(response);
-
+  // output.attachment('samples.zip');
+  archive.pipe(output);
   archive.directory(__dirname + '/sounds', false);
+  await archive.finalize()
+}
 
-  archive.finalize();
-
+const downloadFile = async (fileUrl, outputLocationPath) => {
+  const file = fs.createWriteStream(outputLocationPath);
+  return axios({
+    method: 'GET',
+    url: fileUrl,
+    responseType: 'stream',
+  }).then(response => {
+    return new Promise((resolve, reject) => {
+      response.data.pipe(file);
+      let error = null;
+      file.on('error', err => {
+        error = err;
+        file.close();
+        reject(err);
+      });
+      file.on('close', () => {
+        if (!error) {
+          resolve(true);
+        }
+      });
+    });
+  });
 }
 
 exports.download = functions.https.onRequest(async (request, response) => {
-
-  const file = fs.createWriteStream("./sounds/file.mp3");
-  https.get("https://freesound.org/data/previews/215/215601_1979597-hq.mp3", function(res) {
-    var stream = res.pipe(file);
-    stream.on('finish', () => {
-      archiveFiles(response);
-    });
+  response.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'X-Requested-With'
   });
 
+  // await archiveFiles("archive");
+  // response.download('./zip/archive.zip')
+  var zip = new AdmZip();
+
+  zip.addLocalFile("./sounds/FAT_Vocals-252372.mp3");
+  var zipFileContents = zip.toBuffer();
+  
+  const fileName = 'uploads.zip';
+  const fileType = 'application/zip';
+
+  response.writeHead(200, {
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Content-Type': fileType,
+  })
+  return response.end(zipFileContents)
 });

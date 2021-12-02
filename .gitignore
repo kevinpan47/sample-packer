@@ -105,6 +105,7 @@ dist
 
 sample-packer-b3b1b11699e9.json
 /functions/sounds
+/functions/zip
 
 # production
 /build
