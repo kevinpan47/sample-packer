@@ -16,25 +16,12 @@ const Home = () => {
       url: `http://localhost:5001/sample-packer/us-central1/randomSoundPreviews`,
       responseType: 'blob',
       params: {
-        count: 3
+        count: 10
       }
     }).then(res => {
       console.log(res.data);
       var blob = new Blob([res.data], {type: "application/zip"});
       fileSaver.saveAs(blob, "samples.zip")
-    }).catch(err => {
-      console.log(err);
-    });
-  }
-
-  const downloadZip = () => {
-    axios({
-      method: 'GET',
-      url: `http://localhost:5001/sample-packer/us-central1/download`,
-      responseType: 'blob'
-    }).then(res => {
-      console.log(res.data);
-      
     }).catch(err => {
       console.log(err);
     });
