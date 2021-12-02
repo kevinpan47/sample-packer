@@ -16,7 +16,7 @@ const Home = () => {
       url: `http://localhost:5001/sample-packer/us-central1/randomSoundPreviews`,
       responseType: 'blob',
       params: {
-        count: 10
+        count: 20
       }
     }).then(res => {
       console.log(res.data);
