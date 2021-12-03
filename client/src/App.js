@@ -1,7 +1,7 @@
 import logo from './logo.svg';
-import './App.css';
+import './styles/App.css';
 import Home from './components/Home'
-import "antd/dist/antd.css"
+import './styles/index.css';
 
 function App() {
   return (
