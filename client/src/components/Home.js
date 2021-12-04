@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import fileSaver from "file-saver";
 import SoundCard from './SoundCard';
+import SoundCard2 from './SoundCard2';
 import '../styles/index.css';
 
 const Home = () => {
@@ -42,14 +43,27 @@ const Home = () => {
     });
   }
 
+  const deleteSound = (id) => {
+    var newSounds = [...sounds];
+    for (var i in newSounds) {
+      console.log(id)
+      if (newSounds[i].id == id) {
+        newSounds.splice(i, 1);
+        break;
+      }
+    }
+    console.log(i);
+    console.log(newSounds);
+    setSounds(newSounds);
+  }
+
   const renderSounds = () => {
     var list = []
     for (var index in sounds) {
       // console.log)
       list.push(
         <>
-          <SoundCard sound={sounds[index]}/>
-          <br/>
+          <SoundCard2 sound={sounds[index]} delete={(id) => deleteSound(id)}/>
         </>
       );
     }
@@ -58,9 +72,8 @@ const Home = () => {
   }
 
   return(
-    <div className="container">
-      <div className="align-center">
-        <h1>Get Sounds!</h1>
+    <div className="bg-gray-300 px-12 h-full min-h-screen">
+      <div className="w-screen">
         <button
           className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
           onClick={download}
@@ -75,8 +88,11 @@ const Home = () => {
           <div className="animate-spin h-5 w-5 mr-3 rounded-full"></div>
           Fetch
         </button>
-        {renderSounds()}
       </div>
+      <br />
+      <div className="box-border grid-cols-1 sm:grid-cols-1 md:mx-auto md:masonry-2-col lg:masonry-2-col xl:masonry-3-col gap-5">
+          {renderSounds()}
+        </div>
     </div>
   );
 }

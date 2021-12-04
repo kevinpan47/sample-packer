@@ -17,10 +17,11 @@ exports.downloadZip = functions
     }
   
     const zip = new AdmZip();
+    console.log(request.query.sounds)
     const data = JSON.parse(request.query.sounds);
   
-    for (var index in data.sounds) {
-      sound = data.sounds[index];
+    for (var index in data) {
+      sound = data[index];
   
       await axios({
         method: 'GET',
