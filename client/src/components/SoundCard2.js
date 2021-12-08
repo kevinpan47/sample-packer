@@ -2,13 +2,13 @@
 const SoundCard2 = (props) => {
   return(
     <div className="mb-10 mx-4">
-      <div className="bg-gray-100 opacity-80 scale-80 transition duration-400 transform hover:opacity-100 hover:scale-110 ease-in-out rounded-lg shadow-xl break-inside inline-flex flex-col w-full">
+      <div className="bg-gray-600 text-white opacity-80 scale-80 transition duration-400 transform hover:opacity-100 hover:scale-110 ease-in-out rounded-lg shadow-xl break-inside inline-flex flex-col w-full">
         {/* Header */}
-        <header className="bg-gray-200 rounded-t-lg px-2 py-3 w-auto align-middle flex-wrap inline-block flex-row overflow-hidden whitespace-nowrap overflow-ellipsis">
+        <header className="bg-gray-800 rounded-t-lg px-2 py-3 w-auto align-middle flex-wrap inline-block flex-row overflow-hidden whitespace-nowrap overflow-ellipsis">
           <div className="float-right inline-flex">
             <div className="px-2">
               <a
-                onClick={() => {console.log('clicked refresh')}}
+                onClick={() => {console.log('clicked link')}}
                 className="bg-gray-400 transition duration-300 ease-in-out transform hover:translate-y-1 hover:bg-blue-500 p-2 font-semibold text-white inline-flex space-x-2 rounded cursor-pointer"
                 href={props.sound.url}
                 target="_blank"
