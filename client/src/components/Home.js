@@ -72,7 +72,6 @@ const Home = () => {
   const renderSounds = () => {
     var list = []
     for (var index in sounds) {
-      // console.log)
       list.push(
         <>
           <SoundCard2 sound={sounds[index]} delete={(id) => deleteSound(id)}/>

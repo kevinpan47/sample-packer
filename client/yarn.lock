@@ -1131,24 +1131,10 @@
     "core-js-pure" "^3.0.0"
     "regenerator-runtime" "^0.13.4"
 
-"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4":
-  "integrity" "sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.18.tgz"
-  "version" "7.12.18"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.12.5":
-  "integrity" "sha512-WBwekcqacdY2e9AF/Q7WLFUWmdJGJTkbjqTjoMDgXkVZ3ZRUvOPsLb5KdwISoQVsbP+DQzVZW4Zhci0DvpbNTQ=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.16.3.tgz"
-  "version" "7.16.3"
-  dependencies:
-    "regenerator-runtime" "^0.13.4"
-
-"@babel/runtime@^7.9.2":
-  "integrity" "sha512-WBwekcqacdY2e9AF/Q7WLFUWmdJGJTkbjqTjoMDgXkVZ3ZRUvOPsLb5KdwISoQVsbP+DQzVZW4Zhci0DvpbNTQ=="
-  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.16.3.tgz"
-  "version" "7.16.3"
+"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.7", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+  "integrity" "sha512-9E9FJowqAsytyOY6LG+1KuueckRL+aQW+mKvXRXnuFGyRAyepJPmEo9vgMfXUA6O9u3IeEdv9MAkppFcaQwogQ=="
+  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.16.7.tgz"
+  "version" "7.16.7"
   dependencies:
     "regenerator-runtime" "^0.13.4"
 
@@ -2605,6 +2591,14 @@
   "integrity" "sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg=="
   "resolved" "https://registry.npmjs.org/atob/-/atob-2.1.2.tgz"
   "version" "2.1.2"
+
+"automation-events@^4.0.12":
+  "integrity" "sha512-7tu7q/rw3vFuAwjBoarCGql3V0HkC5QAbZUYhOblxxkHzdLUTjVotm0iaIRwiCSqxMeoFK64LrgaSCuSZguvGA=="
+  "resolved" "https://registry.npmjs.org/automation-events/-/automation-events-4.0.12.tgz"
+  "version" "4.0.12"
+  dependencies:
+    "@babel/runtime" "^7.16.7"
+    "tslib" "^2.3.1"
 
 "autoprefixer@^9", "autoprefixer@^9.6.1", "autoprefixer@^9.8.8":
   "integrity" "sha512-eM9d/swFopRt5gdJ7jrpCwgvEMIayITpojhkkSMRsFHYuH5bkSQ4p/9qTEHtmNudUZh22Tehu7I6CxAW0IXTKA=="
@@ -10707,6 +10701,15 @@
   "resolved" "https://registry.npmjs.org/stackframe/-/stackframe-1.2.0.tgz"
   "version" "1.2.0"
 
+"standardized-audio-context@^25.1.8":
+  "integrity" "sha512-GOXncphk6PLnT+79lyvVen2hn68zEX5K++qvRQXdZXobYjPriW0sShgFxqg3AMVysZifc/5S+8IM/9mNf0x+sA=="
+  "resolved" "https://registry.npmjs.org/standardized-audio-context/-/standardized-audio-context-25.3.19.tgz"
+  "version" "25.3.19"
+  dependencies:
+    "@babel/runtime" "^7.16.7"
+    "automation-events" "^4.0.12"
+    "tslib" "^2.3.1"
+
 "static-extend@^0.1.1":
   "integrity" "sha1-YICcOcv/VTNyJv1eC1IPNB8ftcY="
   "resolved" "https://registry.npmjs.org/static-extend/-/static-extend-0.1.2.tgz"
@@ -11154,6 +11157,11 @@
   "resolved" "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz"
   "version" "0.2.0"
 
+"three@^0.136.0":
+  "integrity" "sha512-+fEMX7nYLz2ZesVP/dyifli5Jf8gR3XPAnFJveQ80aMhibFduzrADnjMbARXh8+W9qLK7rshJCjAIL/6cDxC+A=="
+  "resolved" "https://registry.npmjs.org/three/-/three-0.136.0.tgz"
+  "version" "0.136.0"
+
 "throat@^5.0.0":
   "integrity" "sha512-fcwX4mndzpLQKBS1DVYhGAcYaYt7vsHNIvQV+WXMvnow5cgjPphq5CaayLaGsjRdSCKZFNGt7/GYAuXaNOiYCA=="
   "resolved" "https://registry.npmjs.org/throat/-/throat-5.0.0.tgz"
@@ -11243,6 +11251,14 @@
   "resolved" "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.0.tgz"
   "version" "1.0.0"
 
+"tone@^14.7.77":
+  "integrity" "sha512-tCfK73IkLHyzoKUvGq47gyDyxiKLFvKiVCOobynGgBB9Dl0NkxTM2p+eRJXyCYrjJwy9Y0XCMqD3uOYsYt2Fdg=="
+  "resolved" "https://registry.npmjs.org/tone/-/tone-14.7.77.tgz"
+  "version" "14.7.77"
+  dependencies:
+    "standardized-audio-context" "^25.1.8"
+    "tslib" "^2.0.1"
+
 "tough-cookie@^2.3.3", "tough-cookie@~2.5.0":
   "integrity" "sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g=="
   "resolved" "https://registry.npmjs.org/tough-cookie/-/tough-cookie-2.5.0.tgz"
@@ -11297,10 +11313,10 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
-"tslib@^2.0.3":
-  "integrity" "sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A=="
-  "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.1.0.tgz"
-  "version" "2.1.0"
+"tslib@^2.0.1", "tslib@^2.0.3", "tslib@^2.3.1":
+  "integrity" "sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw=="
+  "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
+  "version" "2.3.1"
 
 "tsutils@^3.17.1":
   "integrity" "sha512-RYbuQuvkhuqVeXweWT3tJLKOEJ/UUw9GjNEZGWdrLLlM+611o1gwLHBpxoFJKKl25fLprp2eVthtKs5JOrNeXg=="
