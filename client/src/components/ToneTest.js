@@ -5,6 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import '../styles/index.css';
 
 const ToneTest = () => {
+  const sliderValue = useRef(1);
+
   const mountRef = useRef(null);
   
   const synth = new Tone.MembraneSynth().toDestination()
@@ -13,7 +15,7 @@ const ToneTest = () => {
   
   // Effects
   const filter = new Tone.Filter(1500, "lowpass").toDestination()
-  const reverb = new Tone.Reverb(10).toDestination()
+  const reverb = new Tone.Reverb(100).toDestination()
 
   const fft = new Tone.FFT(256).toDestination()
 
@@ -21,10 +23,31 @@ const ToneTest = () => {
     urls: {
       A4: testLink
     },
-  }).chain(fft, filter)
+  }).connect(fft)
+
+  const addEffect = () => {
+    sampler.connect(reverb)
+    console.log(sampler)
+  }
+
+  const handleEffectChange = async (e) => {
+    e.preventDefault()
+    sliderValue.current = e.target.value
+    reverb.set({
+      wet: e.target.value
+    })
+    // await reverb.ready
+    // console.log(sliderValue)
+  }
 
   const playSound = () => {
-    sampler.triggerAttack("A4")
+    if (sampler.loaded) {
+      sampler.triggerAttack("A4")
+    }
+  }
+
+  const stopSound = () => {
+    sampler.releaseAll()
   }
 
   useEffect(() => {
@@ -32,7 +55,7 @@ const ToneTest = () => {
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight - 64 );
+    renderer.setSize( window.innerWidth, window.innerHeight);
     mountRef.current.appendChild( renderer.domElement );
     
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -66,15 +89,26 @@ const ToneTest = () => {
 
     animate();
 
-    return () => mountRef.current.removeChild( renderer.domElement);
+    return () => mountRef.current.removeChild(renderer.domElement);
   })
 
-  return(
-    <div className="absolute">
+  return (
+    <div>
       <div ref={mountRef}>
-        <div>
+        <div className="absolute">
           <button className="bg-green-500 w-32 h-16 text-white text-2xl" onClick={() => playSound()}>play</button>
-          <button className="bg-red-500 w-32 h-16 text-white text-2xl" onClick={() => playSound()}>test</button>
+          <button className="bg-red-500 w-32 h-16 text-white text-2xl" onClick={() => stopSound()}>stop</button>
+          <div>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.1}
+              orient="vertical"
+              // defaultValue={sliderValue}
+              onChange={handleEffectChange}/>
+              <button className="bg-yellow-200" onClick={_ => addEffect()}>toggleReverb</button>
+          </div>
         </div>
       </div>
     </div>
