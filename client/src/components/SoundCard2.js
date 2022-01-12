@@ -20,7 +20,7 @@ const SoundCard2 = (props) => {
             </div>
             <div className="px-2">
               <button
-                onClick={() => {console.log('clicked refresh')}}
+                onClick={() => props.refresh(props.sound.id)}
                 className="bg-gray-400 transition duration-300 ease-in-out transform hover:translate-y-1 hover:bg-yellow-500 p-2 font-semibold text-white inline-flex space-x-2 rounded"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +39,7 @@ const SoundCard2 = (props) => {
               </button>
             </div>
           </div>
-          <div className="float-left pl-6 w-full overflow-hidden flex-row">
+          <div className="float-left sm:pl-6 w-full overflow-hidden flex-row">
             <span className="font-bold text-2xl inline-block">
               {props.sound.name.substr(0, 45)}
               {props.sound.name.length >= 45 && "..."}

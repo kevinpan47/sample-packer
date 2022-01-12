@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import fileSaver from "file-saver";
-import SoundCard from './SoundCard';
+// import SoundCard from './SoundCard';
 import SoundCard2 from './SoundCard2';
 import '../styles/index.css';
 import FetchForm from './FetchForm';
@@ -9,8 +9,9 @@ import FetchForm from './FetchForm';
 const Home = () => {
   const [sounds, setSounds] = useState();
   const [fetchLoading, setFetchLoading] = useState(false);
-  const [downloading, setDownloading] = useState(false);
   const [showFetchForm, setShowFetchForm] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState(false);
 
   const fetchRandomSounds = (count) => {
     setSounds(null);
@@ -32,6 +33,7 @@ const Home = () => {
   }
 
   const download = () => {
+    setDownloadError(false);
     setDownloading(true);
     axios({
       method: 'GET',
@@ -39,7 +41,8 @@ const Home = () => {
       responseType: 'blob',
       params: {
         sounds: JSON.stringify(sounds)
-      }
+      },
+      timeout: 1000 * 300 // 300 sec timeout
     }).then(res => {
       console.log(res.data);
       var sounds = new Blob([res.data], {type: "application/zip"});
@@ -47,26 +50,56 @@ const Home = () => {
       setDownloading(false)
     }).catch(err => {
       console.log(err);
+      setDownloadError(true)
+      setDownloading(false)
     });
   }
 
   const reset = () => {
     setSounds(null);
+    setDownloadError(false);
     setShowFetchForm(true);
   }
 
+  const refreshSound = (id) => {
+    axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_API_DOMAIN}/randomSearch`,
+      params: {
+        count: 1
+      }
+    }).then(res => {
+      console.log(res.data);
+
+      var newSound = res.data.sounds[0];
+      var currentSounds = [...sounds];
+      for (var i in currentSounds) {
+        console.log(id)
+        if (currentSounds[i].id == id) {
+          currentSounds[i] = newSound;
+          break;
+        }
+      }
+
+      setSounds(currentSounds);
+    }).catch(err => {
+      console.log(err);
+    });
+    
+  }
+
   const deleteSound = (id) => {
-    var newSounds = [...sounds];
-    for (var i in newSounds) {
+    var currentSounds = [...sounds];
+    for (var i in currentSounds) {
       console.log(id)
-      if (newSounds[i].id == id) {
-        newSounds.splice(i, 1);
+      if (currentSounds[i].id == id) {
+        currentSounds.splice(i, 1);
         break;
       }
     }
     console.log(i);
-    console.log(newSounds);
-    setSounds(newSounds);
+    console.log(currentSounds);
+    setSounds(currentSounds);
   }
 
   const renderSounds = () => {
@@ -75,7 +108,7 @@ const Home = () => {
       // console.log)
       list.push(
         <>
-          <SoundCard2 sound={sounds[index]} delete={(id) => deleteSound(id)}/>
+          <SoundCard2 sound={sounds[index]} delete={(id) => deleteSound(id)} refresh={(id) => refreshSound(id)}/>
         </>
       );
     }
@@ -99,11 +132,11 @@ const Home = () => {
               ></div>
             </div>
           ) : (
-            <div className="pt-10">
-              <div className="box-border grid-cols-1 sm:grid-cols-1 md:mx-auto md:masonry-2-col lg:masonry-2-col xl:masonry-3-col gap-5 px-12">
+            <div className="py-10">
+              <div className="box-border grid-cols-1 sm:grid-cols-1 md:mx-auto md:masonry-2-col lg:masonry-2-col xl:masonry-3-col gap-5 sm:px-12">
                 {renderSounds()}
               </div>
-              <div className="justify-center w-full inline-flex py-10 text-3xl">
+              <div className="justify-center w-full sm:inline-flex pt-10 text-3xl">
                 <button
                   className={`mx-4 text-white bg-gray-600 transition disabled:opacity-50 duration-300 ease-in-out transform ${!downloading && "hover:bg-green-500 hover:scale-110 hover:translate-y-1"} font-bold py-2 px-4 rounded inline-flex items-center`}
                   onClick={download}
@@ -125,6 +158,7 @@ const Home = () => {
                       </>
                   }
                 </button>
+                <div className="py-2"/>
                 {
                   !downloading &&
                     <button
@@ -137,6 +171,9 @@ const Home = () => {
                       <span className="pl-2">Clear Search</span>
                     </button>
                 }
+              </div>
+              <div className="flex justify-center items-center">
+                {downloadError && <span className="text-red-500 italic relative">There was an error with your download</span>}
               </div>
             </div>
           )

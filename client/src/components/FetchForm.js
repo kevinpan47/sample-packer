@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 
 const FetchForm = (props) => {
@@ -23,7 +23,7 @@ const FetchForm = (props) => {
     <div className="h-screen grid items-center place-items-center">
       <div className="grid mx-auto items-center place-items-center">
         {(error && count !== 0 && count !== "") && <span className="text-red-500 italic relative">Please enter a valid number between 1 and 20</span>}
-        <div className="flex text-5xl font-bold tracking-wide text-gray-900 pb-6">
+        <div className="flex text-5xl font-bold tracking-wide text-gray-900 pb-6 flex-col sm:flex-row justify-center items-center">
           Give me
           <input
             className="appearance-none transition duration-400 ease-in-out block w-16 caret-transparent bg-gray-200 text-gray-700 border mx-2 rounded focus:bg-white focus:outline-none text-center"

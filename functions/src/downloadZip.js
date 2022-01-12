@@ -6,6 +6,7 @@ require('dotenv').config();
 exports.downloadZip = functions
   .runWith({
     timeoutSeconds: 300,
+    memory: "2GB"
   })
   .https.onRequest(async (request, response) => {
     response.header("Access-Control-Allow-Origin", "*");
