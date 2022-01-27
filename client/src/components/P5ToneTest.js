@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react'
 import { ReactP5Wrapper } from 'react-p5-wrapper';
 import '../styles/index.css';
+import EffectSelector from './Effects/EffectSelector';
 import * as Tone from 'tone';
 
 const P5ToneTest = () => {
@@ -79,6 +80,7 @@ const P5ToneTest = () => {
       <div className="absolute">
         <button className="bg-green-500 w-32 h-16 text-white text-2xl" onClick={() => playSound()}>play</button>
         <button className="bg-red-500 w-32 h-16 text-white text-2xl" onClick={() => stopSound()}>stop</button>
+        <EffectSelector />
         <ReactP5Wrapper sketch={sketch} />
       </div>
     </div>
